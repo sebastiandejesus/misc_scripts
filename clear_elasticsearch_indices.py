@@ -14,20 +14,18 @@ from elasticsearch.exceptions import NotFoundError, ConnectionError
 class ESClient(object):
     """Delete Elasticsearch indices older than x days."""
 
-    def __init__(self, es_nodes=None, keep_in_days=180,
-                 prefix='filebeat-*'):
+    def __init__(self, es_nodes, keep_in_days=180, prefix='filebeat-*'):
         """Initialize instance and instance attributes.
 
         Args:
-            es_nodes:	  (list): Elasticsearch node hostnames/ip's. Required.
+            es_nodes:	  (list): Elasticsearch nodes (hostname|ip).
             keep_in_days: (int, optional): Number of days to keep indices. Default 180.
                 (WARNING! Script will delete indices outside the keep_in_days value!)
             prefix:	  (str, optional): ES index prefix. Example: logstash-*
                 Default is `filebeat-*`.
         """
-        if not es_nodes:
-            raise SystemExit('Keyword argument `es_nodes` must contain a list'
-                             'with a minimum of one Elasticsearch node')
+        if not isinstance(es_nodes, list) and not es_nodes:
+            raise SystemExit('List of one or more Elasticsearch nodes needed')
 
         self.es_nodes = es_nodes
         self.prefix = prefix
@@ -116,7 +114,7 @@ def main():
     to a specified mailbox.
     """
     # Initialize a client
-    client = ESClient(es_nodes=['10.100.228.33', '10.126.222.18'])
+    client = ESClient(['10.100.228.33', '10.126.222.18'])
 
     # Run delete operation
     list_of_deleted_indices = client.run()
