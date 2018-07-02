@@ -114,7 +114,7 @@ def main():
     to a specified mailbox.
     """
     # Initialize a client
-    client = ESClient(['10.100.228.33', '10.126.222.18'])
+    client = ESClient(['{{ node1 ip }}', '{{ node2 ip }}'])
 
     # Run delete operation
     list_of_deleted_indices = client.run()
@@ -122,8 +122,8 @@ def main():
     # Send results to inbox
     ESClient.email_results(
         smtp='localhost',
-        from_addr='ansible@creativevirtual.com',
-        to_addr='infra_usa@creativevirtual.com',
+        from_addr='jenkins@example.com',
+        to_addr='infra@example.com',
         subject='Deleted Elasticsearch indices',
         content=list_of_deleted_indices)
 
